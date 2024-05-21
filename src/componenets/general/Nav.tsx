@@ -6,10 +6,10 @@ function Nav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="nav nav-overline">
+    <nav>
       <Tabs value={pathname} /* Set initial value based on pathname */
-            textColor="primary" /* Set text color */
-            indicatorColor="primary" /* Set indicator color */>
+          textColor="primary" /* Set text color */
+          indicatorColor="primary" /* Set indicator color */ centered>
         <Tab 
           component={Link} // Wrap Tab with Link for routing
           to="/tutors"
