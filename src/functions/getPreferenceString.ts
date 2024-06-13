@@ -21,20 +21,11 @@ function getPreferenceString(tutor: Tutor) {
   if (tutor.basic_math) {
     preferenceString += "Basic Math, ";
   }
-  if (tutor.hiset_math) {
-    preferenceString += "HiSET Math, ";
-  }
   if (tutor.basic_reading) {
     preferenceString += "Basic Reading, ";
   }
-  if (tutor.hiset_reading) {
-    preferenceString += "HiSET Reading, ";
-  }
   if (tutor.basic_writing) {
     preferenceString += "Basic Writing, ";
-  }
-  if (tutor.hiset_writing) {
-    preferenceString += "HiSET Writing, ";
   }
   return preferenceString.slice(0, preferenceString.length - 2);
 }

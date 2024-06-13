@@ -12,9 +12,6 @@ export interface Tutor {
 	citizenship: boolean;
 	sped_ela:	boolean;
 	basic_math: boolean;
-	hiset_math: boolean;
 	basic_reading: boolean;
-	hiset_reading: boolean;
 	basic_writing: boolean;
-	hiset_writing: boolean;
 }

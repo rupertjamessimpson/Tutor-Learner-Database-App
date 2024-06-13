@@ -1,28 +1,60 @@
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { Tabs, Tab } from '@mui/material';
+import { Box, Tabs, Tab } from '@mui/material';
 
 function Nav() {
   const { pathname } = useLocation();
 
   return (
     <nav>
-      <Tabs value={pathname} /* Set initial value based on pathname */
-          textColor="primary" /* Set text color */
-          indicatorColor="primary" /* Set indicator color */ centered>
-        <Tab 
-          component={Link} // Wrap Tab with Link for routing
-          to="/tutors"
-          label="Tutors"
-          value="/tutors" /* Set value for active state */
-        />
-        <Tab 
-          component={Link} // Wrap Tab with Link for routing
-          to="/learners"
-          label="Learners"
-          value="/learners" /* Set value for active state */
-        />
-      </Tabs>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={pathname}
+            textColor="primary"
+            indicatorColor="primary">
+          <Tab
+            component={Link}
+            to="/tutors"
+            label="Tutors"
+            value="/tutors"
+          />
+          <Tab
+            component={Link}
+            to="/learners"
+            label="Learners"
+            value="/learners"
+          />
+          <Tab
+            component={Link}
+            to="/matches"
+            label="Matches"
+            value="/matches"
+          />
+          <Tab
+            component={Link}
+            to="/conversation"
+            label="Conversation"
+            value="/conversation"
+          />
+          <Tab
+            component={Link}
+            to="/email"
+            label="Email"
+            value="/email"
+          />
+          <Tab
+            component={Link}
+            to="/hours"
+            label="Hours"
+            value="/hours"
+          />
+          <Tab
+            component={Link}
+            to="/forms"
+            label="Forms"
+            value="/forms"
+          />
+        </Tabs>
+      </Box>
     </nav>
   );
 }

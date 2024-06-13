@@ -9,8 +9,8 @@ const theme = createTheme({
         main: '#F9B87F', // Light orange
       },
       background: { // Background color options
-        default: '#F5F5F5', // Very light gray
-        paper: '#E0E0E0', // Light gray for content areas
+        default: '#FFFFFF', // Very light gray
+        paper: '#FFFFFF', // Light gray for content areas
       },
       text: { // Text color options
         primary: '#333333', // Black for main text

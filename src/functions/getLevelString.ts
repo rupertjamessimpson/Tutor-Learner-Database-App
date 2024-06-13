@@ -23,20 +23,11 @@ function getLevelString(level: string) {
     case 'basic_math':
       returnString = 'Basic Math';
       break;
-    case 'hiset_math': 
-      returnString = 'HiSET Math';
-      break;
     case 'basic_reading':
       returnString = 'Basic Reading';
       break;
-    case 'hiset_reading':
-      returnString = 'HiSET Reading';
-      break;
     case 'basic_writing':
       returnString = 'Basic Writing';
-      break;
-    case 'hiset_writing':
-      returnString = 'HiSET Writing';
       break;
 	}
     

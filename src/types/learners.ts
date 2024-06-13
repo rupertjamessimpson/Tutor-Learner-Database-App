@@ -5,5 +5,6 @@ export interface Learner {
 	email: string;
 	phone: number;
 	level: string;
+	conversation: number;
 	available: boolean;
 }
