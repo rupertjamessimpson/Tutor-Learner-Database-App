@@ -1,9 +1,9 @@
 import React from "react";
 
-function UsersForm() {
+function UserForm() {
   return (
     <div className="users-create-container">Users from</div>
   );
 }
 
-export default UsersForm;
+export default UserForm;
