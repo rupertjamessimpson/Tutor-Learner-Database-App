@@ -3,8 +3,6 @@ const router = express.Router();
 const learnerController = require('../controllers/learnerController');
 
 router.get('/', learnerController.getAllLearners);
-router.post('/', learnerController.createLearner);
-router.put('/:id', learnerController.updateLearner);
-router.delete('/:id', learnerController.deleteLearner);
+router.get('/:id', learnerController.getLearnerById);
 
 module.exports = router;

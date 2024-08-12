@@ -3,8 +3,6 @@ const router = express.Router();
 const tutorController = require('../controllers/tutorController');
 
 router.get('/', tutorController.getAllTutors);
-router.post('/', tutorController.createTutor);
-router.put('/:id', tutorController.updateTutor);
-router.delete('/:id', tutorController.deleteTutor);
+router.get('/:id', tutorController.getTutorById);
 
 module.exports = router;

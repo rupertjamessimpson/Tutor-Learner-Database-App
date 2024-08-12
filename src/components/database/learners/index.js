@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import "../index.css";
 
@@ -9,12 +10,8 @@ function Learners() {
   useEffect(() => {
     fetch("http://localhost:5002/api/learners")
       .then(response => response.json())
-      .then(data => {
-        setLearners(data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .then(data => {setLearners(data)})
+      .catch(err => {console.log(err)});
   }, []);
 
   return (
@@ -23,8 +20,10 @@ function Learners() {
       <div className="list-container">
         <ul className="list">
           {learners.map(learner => (
-            <li key={learner.id}>
-              {learner.first_name} {learner.last_name}
+            <li key={learner.learner_id}>
+              <Link to={`/database/learners/${learner.learner_id}`}>
+                {learner.first_name} {learner.last_name}
+              </Link>
             </li>
           ))}
         </ul>

@@ -24,38 +24,28 @@ exports.getAllTutors = async (req, res) => {
   }
 };
 
-exports.createTutor = async (req, res) => {
-	const { first_name, last_name, phone, email, available } = req.body;
-	try {
-		const { rows } = await pool.query('INSERT INTO tutors (first_name, last_name, phone, email, available) VALUES ($1, $2, $3, $4, $5) RETURNING *', 
-			[first_name, last_name, phone, email, available]);
-		res.json(rows[0]);
-	} catch (error) {
-		console.error('Error creating tutor:', error);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
-};
-
-exports.updateTutor = async (req, res) => {
-	const id = req.params.id;
-	const { first_name, last_name, phone, email, available } = req.body;
-	try {
-		const { rows } = await pool.query('UPDATE tutors SET first_name=$1, last_name=$2, phone=$3, email=$4, available=$5 WHERE tutor_id=$6 RETURNING *', 
-			[first_name, last_name, phone, email, available, id]);
-		res.json(rows[0]);
-	} catch (error) {
-		console.error('Error updating tutor:', error);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
-};
-
-exports.deleteTutor = async (req, res) => {
+exports.getTutorById = async (req, res) => {
 	const id = req.params.id;
 	try {
-		await pool.query('DELETE FROM tutors WHERE tutor_id=$1', [id]);
-		res.json({ message: 'Tutor deleted successfully' });
-	} catch (error) {
-		console.error('Error deleting tutor:', error);
-		res.status(500).json({ error: 'Internal Server Error' });
+		const tutorQuery = 'SELECT * FROM tutors WHERE tutor_id = $1';
+		const preferencesQuery = 'SELECT * FROM preferences WHERE tutor_id = $1';
+		const availabilityQuery = 'SELECT * FROM tutor_availability WHERE tutor_id = $1';
+
+		const tutorResult = await pool.query(tutorQuery, [id]);
+		const preferencesResult = await pool.query(preferencesQuery, [id]);
+		const availabilityResult = await pool.query(availabilityQuery, [id]);
+
+		const tutor = tutorResult.rows[0];
+		const preferences = preferencesResult.rows[0];
+		const availability = availabilityResult.rows;
+
+		if (tutor) {
+			res.json({ tutor, preferences, availability });
+		} else {
+			res.status(404).json({ error: 'Tutor not found' });
+		}
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).json({ err: 'Internal Server Error' });
 	}
 };

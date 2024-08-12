@@ -1,5 +1,5 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import "../index.css";
 
@@ -7,14 +7,10 @@ function Tutors() {
   const [tutors, setTutors] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5002/api/tutors")
-      .then(response => response.json())
-      .then(data => {
-        setTutors(data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    fetch(`http://localhost:5002/api/tutors/`)
+      .then((response) => response.json())
+      .then((data) => setTutors(data))
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -23,8 +19,10 @@ function Tutors() {
       <div className="list-container">
         <ul className="list">
           {tutors.map(tutor => (
-            <li key={tutor.id}>
-              {tutor.first_name} {tutor.last_name}
+            <li key={tutor.tutor_id}>
+              <Link to={`/database/tutors/${tutor.tutor_id}`}>
+                {tutor.first_name} {tutor.last_name}
+              </Link>
             </li>
           ))}
         </ul>
