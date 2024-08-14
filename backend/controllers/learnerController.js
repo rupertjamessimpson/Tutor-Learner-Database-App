@@ -11,7 +11,18 @@ const pool = new Pool({
 
 exports.getAllLearners = async (req, res) => {
 	try {
-		const learners = await pool.query('SELECT * FROM learners');
+		const learners = await pool.query(`
+			SELECT
+				l.*,
+				MAX(CASE WHEN a.day = 'Monday' THEN 1 ELSE 0 END) AS monday,
+				MAX(CASE WHEN a.day = 'Tuesday' THEN 1 ELSE 0 END) AS tuesday,
+				MAX(CASE WHEN a.day = 'Wednesday' THEN 1 ELSE 0 END) AS wednesday,
+				MAX(CASE WHEN a.day = 'Thursday' THEN 1 ELSE 0 END) AS thursday,
+				MAX(CASE WHEN a.day = 'Friday' THEN 1 ELSE 0 END) AS friday
+			FROM learners l
+			LEFT JOIN learner_availability a ON l.learner_id = a.learner_id
+			GROUP BY l.learner_id;
+		`);
 		res.json(learners.rows);
 	} catch (error) {
 		console.error(error.message);

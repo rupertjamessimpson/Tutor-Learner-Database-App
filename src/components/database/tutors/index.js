@@ -7,6 +7,7 @@ function Tutors() {
   const [tutors, setTutors] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
+    available: false,
     conversation: false,
     esl_novice: false,
     esl_beginner: false,
@@ -34,36 +35,107 @@ function Tutors() {
       .catch((err) => console.error(err));
   }, []);
 
-  const filteredTutors = tutors.filter(tutor => {
-    return `${tutor.first_name} ${tutor.last_name}`
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-  });
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleFilterChange = (e) => {
+    const { name, checked } = e.target;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [name]: checked
+    }));
+  };
+
+  const applyFilters = () => {
+    return tutors.filter(tutor => {
+      const matchesSearchQuery = `${tutor.first_name} ${tutor.last_name}`
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      const matchesPreferences = Object.keys(filters).every(key => {
+        if (filters[key]) {
+          return tutor[key];
+        }
+        return true;
+      });
+
+      return matchesSearchQuery && matchesPreferences;
+    });
+  };
+
+  const filteredTutors = applyFilters();
+
   return (
     <div className="data-container">
-      <h1>Tutors</h1>
-      <input
-        type="text"
-        placeholder="Search tutors"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <button onClick={toggleSidebar}>Filter</button>
-      <div className="list-container">
-        <ul className="list">
-          {filteredTutors.map(tutor => (
-            <li key={tutor.tutor_id}>
-              <Link to={`/database/tutors/${tutor.tutor_id}`}>
-                {tutor.first_name} {tutor.last_name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <h3 className="header" >Tutors</h3>
+      <div className="search-filter-container">
+        <input
+          type="text"
+          placeholder="Search Tutors"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="filterButton" onClick={toggleSidebar}>
+          {isSidebarOpen ? 'Hide Filters' : 'Show Filters'}
+        </button>
+      </div>
+      <div className="filters-and-list-container">
+        <div className="list-container">
+          <ul className="list">
+            {filteredTutors.map(tutor => (
+              <li key={tutor.tutor_id}>
+                <Link to={`/database/tutors/${tutor.tutor_id}`}>
+                  {tutor.first_name} {tutor.last_name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {isSidebarOpen && (
+          <div className="sidebar">
+            <form>
+              <div key="available">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="available"
+                    checked={filters.available}
+                    onChange={handleFilterChange}
+                  />available
+                </label>
+              </div>
+              <h3>Preferences</h3>
+              {Object.keys(filters).slice(1, 13).map((preference) => (
+                <div key={preference}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name={preference}
+                      checked={filters[preference]}
+                      onChange={handleFilterChange}
+                    />
+                    {preference.replace('_', ' ')}
+                  </label>
+                </div>
+              ))}
+              <h3>Days Available</h3>
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map((day) => (
+                <div key={day}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name={day}
+                      checked={filters[day]}
+                      onChange={handleFilterChange}
+                    />
+                    {day.charAt(0).toUpperCase() + day.slice(1)}
+                  </label>
+                </div>
+              ))}
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
