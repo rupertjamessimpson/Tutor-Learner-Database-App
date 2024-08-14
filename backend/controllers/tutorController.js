@@ -12,9 +12,17 @@ const pool = new Pool({
 exports.getAllTutors = async (req, res) => {
   try {
     const query = `
-      SELECT t.*, p.*
-      FROM tutors t
-      LEFT JOIN preferences p ON t.tutor_id = p.tutor_id
+			SELECT
+				t.*, p.*,
+				MAX(CASE WHEN a.day = 'Monday' THEN 1 ELSE 0 END) AS monday,
+				MAX(CASE WHEN a.day = 'Tuesday' THEN 1 ELSE 0 END) AS tuesday,
+				MAX(CASE WHEN a.day = 'Wednesday' THEN 1 ELSE 0 END) AS wednesday,
+				MAX(CASE WHEN a.day = 'Thursday' THEN 1 ELSE 0 END) AS thursday,
+				MAX(CASE WHEN a.day = 'Friday' THEN 1 ELSE 0 END) AS friday
+			FROM tutors t
+			LEFT JOIN preferences p ON t.tutor_id = p.tutor_id
+			LEFT JOIN tutor_availability a ON t.tutor_id = a.tutor_id
+			GROUP BY t.tutor_id, p.preference_id;
     `;
     const { rows } = await pool.query(query);
     res.json(rows);
