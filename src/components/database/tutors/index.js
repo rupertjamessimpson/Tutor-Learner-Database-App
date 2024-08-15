@@ -53,14 +53,14 @@ function Tutors() {
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
-      const matchesPreferences = Object.keys(filters).every(key => {
+      const matchesFilters = Object.keys(filters).every(key => {
         if (filters[key]) {
           return tutor[key];
         }
         return true;
       });
 
-      return matchesSearchQuery && matchesPreferences;
+      return matchesSearchQuery && matchesFilters;
     });
   };
 

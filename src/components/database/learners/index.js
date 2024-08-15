@@ -48,35 +48,29 @@ function Learners() {
 
   const applyFilters = () => {
     return learners.filter(learner => {
-      let matchesFilters = true;
-  
       const matchesSearchQuery = `${learner.first_name} ${learner.last_name}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
   
       const matchesLevel = Object.keys(filters).slice(1, 12).some(key => {
-        if (filters[key]) {
-          return learner.level === key;
-        }
-        return false;
+        return filters[key] && learner.level === key;
       });
   
-      const matchDaysAvailable = Object.keys(filters).slice(13).every(day => {
-        if (filters[day]) {
-          return learner[day];
-        }
-        return true;
+      const matchDaysAvailable = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].every(day => {
+        return filters[day] ? learner[day] : true;
       });
   
       const matchesAvailability = filters.available ? learner.available : true;
   
-      if (Object.values(filters).some(filter => filter)) {
-        matchesFilters = matchesSearchQuery && matchesLevel && matchDaysAvailable && matchesAvailability;
-      } else {
-        matchesFilters = matchesSearchQuery;
-      }
+      const anyLevelFilterSelected = Object.keys(filters).slice(1, 12).some(key => filters[key]);
+      const anyDayFilterSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].some(day => filters[day]);
   
-      return matchesFilters;
+      const matchesFilters =
+        (!anyLevelFilterSelected || matchesLevel) &&
+        (!anyDayFilterSelected || matchDaysAvailable) &&
+        matchesAvailability;
+  
+      return matchesSearchQuery && matchesFilters;
     });
   };
   
