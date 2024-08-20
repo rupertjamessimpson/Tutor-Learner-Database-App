@@ -12,6 +12,7 @@ import TutorDetails from './components/database/tutors/details/index.js';
 import LearnerForm from './components/forms/learners/index.js';
 import UsersList from './components/users/list/index.js';
 import UserForm from './components/users/create/index.js';
+import Conversation from './components/conversation/index.js';
 
 function App() {
   return (
@@ -29,6 +30,11 @@ function App() {
           <Route path="/forms" element={<Navigate to="/forms/tutor" />} />
           <Route path="/forms/tutor" element={<TutorForm />} />
           <Route path="/forms/learner" element={<LearnerForm />} />
+          <Route path="/conversation" element={<Navigate to="/conversation/1" />} />
+          <Route path="/conversation/1" element={<Conversation />} />
+          <Route path="/conversation/2" element={<Conversation />} />
+          <Route path="/conversation/3" element={<Conversation />} />
+          <Route path="/conversation/4" element={<Conversation />} />
           <Route path="/users" element={<Navigate to="/users/list" />} />
           <Route path="/users/list" element={<UsersList />} />
           <Route path="/users/form" element={<UserForm />} />

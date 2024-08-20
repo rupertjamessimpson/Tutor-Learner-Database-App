@@ -68,7 +68,7 @@ function Tutors() {
 
   return (
     <div className="data-container">
-      <h3 className="header" >Tutors</h3>
+      <h3 className="header">Tutors</h3>
       <div className="search-filter-container">
         <input
           type="text"

@@ -8,6 +8,7 @@ function Learners() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     available: false,
+    not_in_class: false,
     esl_novice: false,
     esl_beginner: false,
     esl_intermediate: false,
@@ -51,29 +52,31 @@ function Learners() {
       const matchesSearchQuery = `${learner.first_name} ${learner.last_name}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
+
+      const matchesAvailability = filters.available ? learner.available : true;
+
+      const matchesNotInClass = filters.not_in_class ? learner.conversation === null : true;
   
-      const matchesLevel = Object.keys(filters).slice(1, 12).some(key => {
+      const matchesLevel = Object.keys(filters).slice(2, 13).some(key => {
         return filters[key] && learner.level === key;
       });
   
       const matchDaysAvailable = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].every(day => {
         return filters[day] ? learner[day] : true;
       });
-  
-      const matchesAvailability = filters.available ? learner.available : true;
-  
-      const anyLevelFilterSelected = Object.keys(filters).slice(1, 12).some(key => filters[key]);
+
+      const anyLevelFilterSelected = Object.keys(filters).slice(2, 13).some(key => filters[key]);
       const anyDayFilterSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].some(day => filters[day]);
   
       const matchesFilters =
         (!anyLevelFilterSelected || matchesLevel) &&
         (!anyDayFilterSelected || matchDaysAvailable) &&
-        matchesAvailability;
+        matchesAvailability && matchesNotInClass;
   
       return matchesSearchQuery && matchesFilters;
     });
   };
-  
+
 
   const filteredLearners = applyFilters();
 
@@ -116,8 +119,18 @@ function Learners() {
                   />available
                 </label>
               </div>
+              <div key="not_in_class">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="not_in_class"
+                    checked={filters.not_in_class}
+                    onChange={handleFilterChange}
+                  />not in class
+                </label>
+              </div>
               <h3>Level</h3>
-              {Object.keys(filters).slice(1, 12).map((preference) => (
+              {Object.keys(filters).slice(2, 13).map((preference) => (
                 <div key={preference}>
                   <label>
                     <input

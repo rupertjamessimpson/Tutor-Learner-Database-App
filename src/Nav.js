@@ -8,6 +8,7 @@ function Nav() {
   const inDatabase = location.pathname.startsWith('/database');
   const inForms = location.pathname.startsWith('/forms');
   const inUsers = location.pathname.startsWith('/users');
+  const inConversation = location.pathname.startsWith('/conversation');
 
   return (
     <div className="nav-container">
@@ -23,6 +24,12 @@ function Nav() {
           className="nav-button"
           activeClassName="active">
             Forms
+        </NavLink>
+        <NavLink
+          to="/conversation"
+          className="nav-button"
+          activeClassName="active">
+            Conversation
         </NavLink>
         <NavLink
           to="/users"
@@ -41,6 +48,13 @@ function Nav() {
         <div className="sub-nav-container">
             <Link to="/forms/tutor" className="sub-nav-button">Tutor</Link>
             <Link to="/forms/learner" className="sub-nav-button">Learner</Link>
+        </div>)}
+      {inConversation && (
+        <div className="sub-nav-container">
+            <Link to="/conversation/1" className="sub-nav-button">Class 1</Link>
+            <Link to="/conversation/2" className="sub-nav-button">Class 2</Link>
+            <Link to="/conversation/3" className="sub-nav-button">Class 3</Link>
+            <Link to="/conversation/4" className="sub-nav-button">Class 4</Link>
         </div>)}
       {inUsers && (
         <div className="sub-nav-container">
