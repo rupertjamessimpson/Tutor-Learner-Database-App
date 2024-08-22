@@ -7,6 +7,13 @@
   color: #4EC1C0;
 }
 
+.filter-label {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 .filters-and-list-container {
   display: flex;
   justify-content: space-between;
@@ -29,7 +36,7 @@
 
 .list-container {
   flex-grow: 1;
-  height: 470px;
+  height: 473px;
   overflow-y: auto;
   border: 1px solid #ccc;
   background-color: #f9f9f9;

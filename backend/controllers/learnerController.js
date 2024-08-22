@@ -18,7 +18,8 @@ exports.getAllLearners = async (req, res) => {
 				MAX(CASE WHEN a.day = 'Tuesday' THEN 1 ELSE 0 END) AS tuesday,
 				MAX(CASE WHEN a.day = 'Wednesday' THEN 1 ELSE 0 END) AS wednesday,
 				MAX(CASE WHEN a.day = 'Thursday' THEN 1 ELSE 0 END) AS thursday,
-				MAX(CASE WHEN a.day = 'Friday' THEN 1 ELSE 0 END) AS friday
+				MAX(CASE WHEN a.day = 'Friday' THEN 1 ELSE 0 END) AS friday,
+				MAX(CASE WHEN a.day = 'Saturday' THEN 1 ELSE 0 END) AS saturday
 			FROM learners l
 			LEFT JOIN learner_availability a ON l.learner_id = a.learner_id
 			GROUP BY l.learner_id;
@@ -50,4 +51,49 @@ exports.getLearnerById = async (req, res) => {
 		console.error(err.message);
 		res.status(500).json({ err: 'Internal Server Error' });
 	}
+};
+
+exports.updateLearnerConversation = async (req, res) => {
+  const { learnerId, conversationId } = req.body;
+  try {
+    const query = `
+      UPDATE learners
+      SET conversation = $2
+      WHERE learner_id = $1
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [learnerId, conversationId]);
+
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'Learner not found' });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.removeLearnerFromConversation = async (req, res) => {
+  const { learnerId } = req.body;
+  
+  try {
+    const query = `
+      UPDATE learners
+      SET conversation = NULL
+      WHERE learner_id = $1
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [learnerId]);
+
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'Learner not found' });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };

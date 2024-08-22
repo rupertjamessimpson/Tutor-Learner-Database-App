@@ -21,8 +21,53 @@ function Conversation() {
     setIsSelectOpen(!isSelectOpen);
   };
 
-  const handleSelectChange = () => {
-    setIsSelectOpen(false);
+  const handleSelectChange = (event) => {
+    const learnerId = event.target.value;
+  
+    fetch('http://localhost:5002/api/learners/update-conversation', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ learnerId, conversationId: id }),
+    })
+      .then((response) => response.json())
+      .then((updatedLearner) => {
+        console.log('Learner added to conversation:', updatedLearner);
+        setIsSelectOpen(false);
+  
+        setLearners((prevLearners) =>
+          prevLearners.map(learner =>
+            learner.learner_id === updatedLearner.learner_id
+              ? updatedLearner
+              : learner
+          )
+        );
+      })
+      .catch((err) => console.error('Error updating learner:', err));
+  };
+
+  const removeLearner = (learnerId) => {
+    fetch('http://localhost:5002/api/learners/remove-conversation', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ learnerId }),
+    })
+      .then((response) => response.json())
+      .then((updatedLearner) => {
+        console.log('Learner removed from conversation:', updatedLearner);
+  
+        setLearners((prevLearners) =>
+          prevLearners.map(learner =>
+            learner.learner_id === updatedLearner.learner_id
+              ? updatedLearner
+              : learner
+          )
+        );
+      })
+      .catch((err) => console.error('Error removing learner:', err));
   };
 
   const filterLearners = () => {
@@ -39,6 +84,7 @@ function Conversation() {
         {isSelectOpen && (
           <div>
             <select onChange={handleSelectChange}>
+              <option value="">Select Learner</option>
               {learners
                 .slice()
                 .sort((a, b) => a.first_name.localeCompare(b.first_name))
@@ -53,12 +99,16 @@ function Conversation() {
       </div>
       <div className="filters-and-list-container">
         <div className="list-container">
-          <ul className="list">
+          <ul className="conversation-list">
             {filteredLearners.map(learner => (
-              <li key={learner.learner_id}>
+              <li key={learner.learner_id} className="learner-item">
                 <Link to={`/database/learners/${learner.learner_id}`}>
                   {learner.first_name} {learner.last_name}
                 </Link>
+                <button
+                  onClick={() => removeLearner(learner.learner_id)}
+                  className="remove-button">Remove
+                </button>
               </li>
             ))}
           </ul>

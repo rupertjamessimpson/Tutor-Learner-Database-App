@@ -24,7 +24,8 @@ function Learners() {
     tuesday: false,
     wednesday: false,
     thursday: false,
-    friday: false
+    friday: false,
+    saturday: false
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -61,12 +62,12 @@ function Learners() {
         return filters[key] && learner.level === key;
       });
   
-      const matchDaysAvailable = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].every(day => {
+      const matchDaysAvailable = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].every(day => {
         return filters[day] ? learner[day] : true;
       });
 
       const anyLevelFilterSelected = Object.keys(filters).slice(2, 13).some(key => filters[key]);
-      const anyDayFilterSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].some(day => filters[day]);
+      const anyDayFilterSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].some(day => filters[day]);
   
       const matchesFilters =
         (!anyLevelFilterSelected || matchesLevel) &&
@@ -129,7 +130,7 @@ function Learners() {
                   />not in class
                 </label>
               </div>
-              <h3>Level</h3>
+              <h3 className="filter-label">Level</h3>
               {Object.keys(filters).slice(2, 13).map((preference) => (
                 <div key={preference}>
                   <label>
@@ -143,8 +144,8 @@ function Learners() {
                   </label>
                 </div>
               ))}
-              <h3>Days Available</h3>
-              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map((day) => (
+              <h3 className="filter-label">Days Available</h3>
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].map((day) => (
                 <div key={day}>
                   <label>
                     <input

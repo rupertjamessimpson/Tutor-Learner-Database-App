@@ -24,7 +24,8 @@ function Tutors() {
     tuesday: false,
     wednesday: false,
     thursday: false,
-    friday: false
+    friday: false,
+    saturday: false
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -105,7 +106,7 @@ function Tutors() {
                   />available
                 </label>
               </div>
-              <h3>Preferences</h3>
+              <h3 className="filter-label">Preferences</h3>
               {Object.keys(filters).slice(1, 13).map((preference) => (
                 <div key={preference}>
                   <label>
@@ -119,8 +120,8 @@ function Tutors() {
                   </label>
                 </div>
               ))}
-              <h3>Days Available</h3>
-              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].map((day) => (
+              <h3 className="filter-label">Days Available</h3>
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].map((day) => (
                 <div key={day}>
                   <label>
                     <input
