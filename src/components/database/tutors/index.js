@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import "../index.css";
-
 function Tutors() {
   const [tutors, setTutors] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

@@ -7,7 +7,6 @@ function Nav() {
   const location = useLocation();
   const inDatabase = location.pathname.startsWith('/database');
   const inForms = location.pathname.startsWith('/forms');
-  const inUsers = location.pathname.startsWith('/users');
   const inConversation = location.pathname.startsWith('/conversation');
 
   return (
@@ -31,23 +30,19 @@ function Nav() {
           activeClassName="active">
             Conversation
         </NavLink>
-        <NavLink
-          to="/users"
-          className="nav-button"
-          activeClassName="active">
-            Users
-        </NavLink>
       </div>
       {inDatabase && (
         <div className="sub-nav-container">
             <Link to="/database/tutors" className="sub-nav-button">Tutors</Link>
             <Link to="/database/learners" className="sub-nav-button">Learners</Link>
             <Link to="/database/matches" className="sub-nav-button">Matches</Link>
+            <Link to="/database/users" className="sub-nav-button">Users</Link>
         </div>)}
       {inForms && (
         <div className="sub-nav-container">
             <Link to="/forms/tutor" className="sub-nav-button">Tutor</Link>
             <Link to="/forms/learner" className="sub-nav-button">Learner</Link>
+            <Link to="/forms/user" className="sub-nav-button">User</Link>
         </div>)}
       {inConversation && (
         <div className="sub-nav-container">
@@ -55,11 +50,6 @@ function Nav() {
             <Link to="/conversation/2" className="sub-nav-button">Class 2</Link>
             <Link to="/conversation/3" className="sub-nav-button">Class 3</Link>
             <Link to="/conversation/4" className="sub-nav-button">Class 4</Link>
-        </div>)}
-      {inUsers && (
-        <div className="sub-nav-container">
-            <Link to="/users/list" className="sub-nav-button">List</Link>
-            <Link to="/users/form" className="sub-nav-button">Form</Link>
         </div>)}
     </div>
   );
