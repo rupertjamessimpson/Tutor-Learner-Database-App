@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation, Link, NavLink } from 'react-router-dom';
-
 import './App.css';
 
 function Nav() {
@@ -14,20 +13,17 @@ function Nav() {
       <div className="top-nav-container">
         <NavLink 
           to="/database"
-          className="nav-button"
-          activeClassName="active">
+          className={({ isActive }) => isActive ? 'nav-button active' : 'nav-button'}>
             Database
         </NavLink>
         <NavLink
           to="/forms"
-          className="nav-button"
-          activeClassName="active">
+          className={({ isActive }) => isActive ? 'nav-button active' : 'nav-button'}>
             Forms
         </NavLink>
         <NavLink
           to="/conversation"
-          className="nav-button"
-          activeClassName="active">
+          className={({ isActive }) => isActive ? 'nav-button active' : 'nav-button'}>
             Conversation
         </NavLink>
       </div>

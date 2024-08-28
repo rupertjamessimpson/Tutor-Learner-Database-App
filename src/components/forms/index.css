@@ -1,8 +1,121 @@
-.form-container {
-  padding-left: 20px;
-  padding-right: 20px;
+.header-and-errors-container {
+  display: flex;
+  gap: 30px;
 }
 
-.header {
-  color: #4EC1C0;
+.error-list {
+  list-style-type: none;
+  padding-left: 20px;
+  color: red;
+}
+
+.form {
+  padding-top: 20px;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-label {
+  width: 100px;
+  margin: 0;
+}
+
+.preferences-label {
+  margin: 0;
+  padding-top: 7px;
+}
+
+.select-label {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.input-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.input-container input {
+  flex-basis: 45%; /* Set a base width for each input */
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  height: 500px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.name-container {
+  display: flex;
+  gap: 10px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+
+.contact-container {
+  display: flex;
+  gap: 10px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+
+.level-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding-left: 125px;
+}
+
+.level-container div {
+  display: flex;
+  align-items: center;
+}
+
+.availability-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.availability-container div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.availability-container label {
+  margin-right: 10px;
+}
+
+.availability-container select {
+  width: 120px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }

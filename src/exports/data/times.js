@@ -19,7 +19,9 @@ const times = [
   "6:30PM",
   "7:00PM",
   "7:30PM",
-  "8:00PM"
+  "8:00PM",
+  "8:30PM",
+  "9:00PM"
 ];
 
 export default times;

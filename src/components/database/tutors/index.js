@@ -128,7 +128,7 @@ function Tutors() {
                       checked={filters[day]}
                       onChange={handleFilterChange}
                     />
-                    {day.charAt(0).toUpperCase() + day.slice(1)}
+                    {day}
                   </label>
                 </div>
               ))}

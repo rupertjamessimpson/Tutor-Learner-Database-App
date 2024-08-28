@@ -28,8 +28,6 @@ function Matches() {
 
   const filteredMatches = applyFilters();
 
-  console.log(filteredMatches);
-
   return (
     <div className="data-container">
       <h3 className="header">Matches</h3>

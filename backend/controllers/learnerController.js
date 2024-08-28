@@ -14,12 +14,12 @@ exports.getAllLearners = async (req, res) => {
 		const learners = await pool.query(`
 			SELECT
 				l.*,
-				MAX(CASE WHEN a.day = 'Monday' THEN 1 ELSE 0 END) AS monday,
-				MAX(CASE WHEN a.day = 'Tuesday' THEN 1 ELSE 0 END) AS tuesday,
-				MAX(CASE WHEN a.day = 'Wednesday' THEN 1 ELSE 0 END) AS wednesday,
-				MAX(CASE WHEN a.day = 'Thursday' THEN 1 ELSE 0 END) AS thursday,
-				MAX(CASE WHEN a.day = 'Friday' THEN 1 ELSE 0 END) AS friday,
-				MAX(CASE WHEN a.day = 'Saturday' THEN 1 ELSE 0 END) AS saturday
+				MAX(CASE WHEN a.day = 'monday' THEN 1 ELSE 0 END) AS monday,
+				MAX(CASE WHEN a.day = 'tuesday' THEN 1 ELSE 0 END) AS tuesday,
+				MAX(CASE WHEN a.day = 'wednesday' THEN 1 ELSE 0 END) AS wednesday,
+				MAX(CASE WHEN a.day = 'thursday' THEN 1 ELSE 0 END) AS thursday,
+				MAX(CASE WHEN a.day = 'friday' THEN 1 ELSE 0 END) AS friday,
+				MAX(CASE WHEN a.day = 'saturday' THEN 1 ELSE 0 END) AS saturday
 			FROM learners l
 			LEFT JOIN learner_availability a ON l.learner_id = a.learner_id
 			GROUP BY l.learner_id;
@@ -95,5 +95,49 @@ exports.removeLearnerFromConversation = async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.createLearner = async (req, res) => {
+  const { first_name, last_name, phone, email, level, availability } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+    const learnerQuery = `
+      INSERT INTO learners (first_name, last_name, phone, email, level)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING learner_id;
+    `;
+    const learnerValues = [first_name, last_name, phone, email, level];
+    const learnerResult = await client.query(learnerQuery, learnerValues);
+    const learnerId = learnerResult.rows[0].learner_id;
+
+    const filteredAvailability = Object.entries(availability)
+      .filter(([day, times]) => times.start_time && times.end_time)
+      .map(([day, times]) => ({
+        learner_id: learnerId,
+        day,
+        start_time: times.start_time,
+        end_time: times.end_time
+      }));
+
+    if (filteredAvailability.length > 0) {
+      const availabilityQuery = `
+        INSERT INTO learner_availability (learner_id, day, start_time, end_time)
+        VALUES ${filteredAvailability.map((_, index) => `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4})`).join(', ')}
+      `;
+      const availabilityValues = filteredAvailability.flatMap(avail => [avail.learner_id, avail.day, avail.start_time, avail.end_time]);
+      await client.query(availabilityQuery, availabilityValues);
+    }
+
+    await client.query('COMMIT');
+    res.status(201).json({ message: 'Learner created successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error creating learner:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    client.release();
   }
 };
