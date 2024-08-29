@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import times from "../../../exports/data/times";
+import capitalizeName from "../../../exports/functions/capitalizeName";
 
 function LearnersForm() {
   const navigate = useNavigate();
@@ -21,6 +22,36 @@ function LearnersForm() {
     }
   });
   const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+  
+    if (type === 'text' || type === 'email') {
+      setLearner((prevLearner) => ({
+        ...prevLearner,
+        [name]: value
+      }));
+    } else if (type === 'checkbox') {
+      if (name === "level") {
+        setLearner((prevLearner) => ({
+          ...prevLearner,
+          level: value
+        }));
+      }
+    } else {
+      const [day, timeType] = name.split('.');
+      setLearner((prevLearner) => ({
+        ...prevLearner,
+        availability: {
+          ...prevLearner.availability,
+          [day]: {
+            ...prevLearner.availability[day],
+            [timeType]: value
+          }
+        }
+      }));
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,41 +87,14 @@ function LearnersForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
-
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-  
-    if (type === 'text' || type === 'email') {
-      setLearner((prevLearner) => ({
-        ...prevLearner,
-        [name]: value
-      }));
-    } else if (type === 'checkbox') {
-      if (name === "level") {
-        setLearner((prevLearner) => ({
-          ...prevLearner,
-          level: value
-        }));
-      }
-    } else {
-      const [day, timeType] = name.split('.');
-      setLearner((prevLearner) => ({
-        ...prevLearner,
-        availability: {
-          ...prevLearner.availability,
-          [day]: {
-            ...prevLearner.availability[day],
-            [timeType]: value
-          }
-        }
-      }));
-    }
-  };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const capitalizedLearner = {
+      ...learner,
+      first_name: capitalizeName(learner.first_name),
+      last_name: capitalizeName(learner.last_name)
+    };
     if (validateForm()) {
       try {
         const response = await fetch('http://localhost:5002/api/learners/', {
@@ -98,7 +102,7 @@ function LearnersForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(learner),
+          body: JSON.stringify(capitalizedLearner),
         });
   
         if (response.ok) {
@@ -153,19 +157,19 @@ function LearnersForm() {
               <h4 className="input-label">Contact</h4>
               <div className="input-container">
                 <input
-                  type="text"
-                  id="phone"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={learner.phone}
-                  onChange={handleChange}
-                />
-                <input
                   type="email"
                   id="email"
                   name="email"
                   placeholder="Email"
                   value={learner.email}
+                  onChange={handleChange}
+                />
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={learner.phone}
                   onChange={handleChange}
                 />
               </div>

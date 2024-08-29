@@ -1,27 +1,43 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../index.css"
-import capitalizeName from "../../../exports/functions/capitalizeName";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import capitalizeName from "../../../../exports/functions/capitalizeName";
 
-function UserForm() {
+const UserEdit = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    password: ""
+    password: "",
   });
-  
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    fetch(`http://localhost:5002/api/users/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const { user: userData } = data;
+
+        setUser({
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          email: userData.email,
+          password: userData.password,
+        });
+      });
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setUser((prevUser) => ({
       ...prevUser,
-      [name]: value
+      [name]: value,
     }));
   };
+
+  console.log(user);
 
   const validateForm = () => {
     const newErrors = {};
@@ -38,7 +54,7 @@ function UserForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     const capitalizedUser = {
       ...user,
@@ -47,8 +63,8 @@ function UserForm() {
     };
     if (validateForm()) {
       try {
-        const response = await fetch('http://localhost:5002/api/users/', {
-          method: 'POST',
+        const response = await fetch(`http://localhost:5002/api/users/${id}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -56,7 +72,7 @@ function UserForm() {
         });
   
         if (response.ok) {
-          navigate(`/database/users`);
+          navigate(`/database/users/${id}`);
         } else {
           const data = await response.json();
           console.error("Server error:", data);
@@ -125,15 +141,15 @@ function UserForm() {
               </div>
             </div>
             <div className="button-container">
-              <button className="submit-button" onClick={handleSubmit}>
-                Submit
-              </button>
+              <button className="submit-button" onClick={handleSave}>Save</button>
+              <button className="cancel-button" onClick={() => navigate(`/database/users/${id}`)}>Cancel</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   );
-}
 
-export default UserForm;
+};
+
+export default UserEdit;

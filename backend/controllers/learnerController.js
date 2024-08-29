@@ -105,8 +105,8 @@ exports.createLearner = async (req, res) => {
   try {
     await client.query('BEGIN');
     const learnerQuery = `
-      INSERT INTO learners (first_name, last_name, phone, email, level)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO learners (first_name, last_name, phone, email, level, available)
+      VALUES ($1, $2, $3, $4, $5, true)
       RETURNING learner_id;
     `;
     const learnerValues = [first_name, last_name, phone, email, level];
@@ -141,3 +141,71 @@ exports.createLearner = async (req, res) => {
     client.release();
   }
 };
+
+exports.deleteLearner = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const result = await pool.query('DELETE FROM learners WHERE learner_id = $1', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Learner not found' });
+    }
+
+    res.status(200).json({ message: 'Learner deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting learner:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.updateLearner = async (req, res) => {
+  const id = req.params.id;
+  const { first_name, last_name, phone, email, level, availability } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+    const learnerQuery = `
+      UPDATE learners
+      SET first_name = $1, last_name = $2, phone = $3, email = $4, level = $5
+      WHERE learner_id = $6
+      RETURNING *;
+    `;
+    const learnerValues = [first_name, last_name, phone, email, level, id];
+    const learnerResult = await client.query(learnerQuery, learnerValues);
+
+    if (learnerResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Learner not found' });
+    }
+
+    const filteredAvailability = Object.entries(availability)
+      .filter(([day, times]) => times.start_time && times.end_time)
+      .map(([day, times]) => ({
+        learner_id: id,
+        day,
+        start_time: times.start_time,
+        end_time: times.end_time
+      }));
+
+    await client.query('DELETE FROM learner_availability WHERE learner_id = $1', [id]);
+
+    if (filteredAvailability.length > 0) {
+      const availabilityQuery = `
+        INSERT INTO learner_availability (learner_id, day, start_time, end_time)
+        VALUES ${filteredAvailability.map((_, index) => `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4})`).join(', ')}
+      `;
+      const availabilityValues = filteredAvailability.flatMap(avail => [avail.learner_id, avail.day, avail.start_time, avail.end_time]);
+      await client.query(availabilityQuery, availabilityValues);
+    }
+
+    await client.query('COMMIT');
+    res.json({ message: 'Learner updated successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error updating learner:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    client.release();
+  }
+}

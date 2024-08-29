@@ -37,8 +37,8 @@ function Users() {
       <div className="list-container">
         <ul className="list">
           {filteredUsers.map((user) => (
-            <li key={user.id}>
-              <Link to={`/database/users/${user.id}`}>
+            <li key={user.user_id}>
+              <Link to={`/database/users/${user.user_id}`}>
                 {user.first_name} {user.last_name}
               </Link>
             </li>

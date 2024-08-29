@@ -65,8 +65,8 @@ exports.createTutor = async (req, res) => {
   try {
     await client.query('BEGIN');
     const tutorQuery = `
-      INSERT INTO tutors (first_name, last_name, phone, email)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO tutors (first_name, last_name, phone, email, available)
+      VALUES ($1, $2, $3, $4, true)
       RETURNING tutor_id;
     `;
     const tutorValues = [first_name, last_name, phone, email];
@@ -118,6 +118,82 @@ exports.createTutor = async (req, res) => {
     await client.query('ROLLBACK');
     console.error('Error creating tutor:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    client.release();
+  }
+};
+
+exports.deleteTutor = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const result = await pool.query('DELETE FROM tutors WHERE tutor_id = $1', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Tutor not found' });
+    }
+
+    res.status(200).json({ message: 'Tutor deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting tutor:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.updateTutor = async (req, res) => {
+  const { id } = req.params;
+  const { 
+    first_name, last_name, phone, email, available, 
+    preferences, availability 
+  } = req.body;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const updateTutorQuery = `
+      UPDATE tutors 
+      SET first_name = $1, last_name = $2, phone = $3, email = $4, available = $5
+      WHERE tutor_id = $6
+    `;
+    await client.query(updateTutorQuery, [
+      first_name, last_name, phone, email, available, id
+    ]);
+
+    const updatePreferencesQuery = `
+      UPDATE preferences 
+      SET conversation = $1, esl_novice = $2, esl_beginner = $3, esl_intermediate = $4, 
+          citizenship = $5, sped_ela = $6, basic_math = $7, hiset_math = $8, 
+          basic_reading = $9, hiset_reading = $10, basic_writing = $11, hiset_writing = $12
+      WHERE tutor_id = $13
+    `;
+    await client.query(updatePreferencesQuery, [
+      preferences.conversation, preferences.esl_novice, preferences.esl_beginner, preferences.esl_intermediate,
+      preferences.citizenship, preferences.sped_ela, preferences.basic_math, preferences.hiset_math,
+      preferences.basic_reading, preferences.hiset_reading, preferences.basic_writing, preferences.hiset_writing,
+      id
+    ]);
+
+    const deleteAvailabilityQuery = `DELETE FROM tutor_availability WHERE tutor_id = $1`;
+    await client.query(deleteAvailabilityQuery, [id]);
+
+    const insertAvailabilityQuery = `
+      INSERT INTO tutor_availability (tutor_id, day, start_time, end_time) 
+      VALUES ($1, $2, $3, $4)
+    `;
+    for (const [day, times] of Object.entries(availability)) {
+      if (times.start_time && times.end_time) {
+        await client.query(insertAvailabilityQuery, [id, day, times.start_time, times.end_time]);
+      }
+    }
+
+    await client.query('COMMIT');
+    res.status(200).json({ message: 'Tutor updated successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error updating tutor:', error);
+    res.status(500).json({ error: 'Failed to update tutor' });
   } finally {
     client.release();
   }

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../index.css"
-import times from "../../../exports/data/times";
-import capitalizeName from "../../../exports/functions/capitalizeName";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import times from "../../../../exports/data/times";
+import capitalizeName from "../../../../exports/functions/capitalizeName";
+import convertTime from "../../../../exports/functions/convertTime";
 
-function TutorsForm() {
+function TutorEdit() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [tutor, setTutor] = useState({
     first_name: "",
@@ -37,10 +38,52 @@ function TutorsForm() {
   });
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    fetch(`http://localhost:5002/api/tutors/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const { tutor: tutorData, preferences, availability } = data;
+
+        setTutor({
+          first_name: tutorData.first_name || "",
+          last_name: tutorData.last_name || "",
+          phone: tutorData.phone || "",
+          email: tutorData.email || "",
+          available: tutorData.available,
+          preferences: {
+            conversation: preferences.conversation || false,
+            esl_novice: preferences.esl_novice || false,
+            esl_beginner: preferences.esl_beginner || false,
+            esl_intermediate: preferences.esl_intermediate || false,
+            citizenship: preferences.citizenship || false,
+            sped_ela: preferences.sped_ela || false,
+            basic_math: preferences.basic_math || false,
+            hiset_math: preferences.hiset_math || false,
+            basic_reading: preferences.basic_reading || false,
+            hiset_reading: preferences.hiset_reading || false,
+            basic_writing: preferences.basic_writing || false,
+            hiset_writing: preferences.hiset_writing || false
+          },
+          availability: availability.reduce((acc, day) => {
+            acc[day.day] = { start_time: day.start_time || "", end_time: day.end_time || "" };
+            return acc;
+          }, {
+            monday: { start_time: "", end_time: "" },
+            tuesday: { start_time: "", end_time: "" },
+            wednesday: { start_time: "", end_time: "" },
+            thursday: { start_time: "", end_time: "" },
+            friday: { start_time: "", end_time: "" },
+            saturday: { start_time: "", end_time: "" }
+          })
+        });
+      })
+      .catch((err) => console.error('Error fetching tutor:', err));
+  }, [id]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    if (type === 'text'|| type === 'email') {
+    if (type === 'text' || type === 'email') {
       setTutor((prevTutor) => ({
         ...prevTutor,
         [name]: value
@@ -106,7 +149,7 @@ function TutorsForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     const capitalizedTutor = {
       ...tutor,
@@ -115,8 +158,8 @@ function TutorsForm() {
     };
     if (validateForm()) {
       try {
-        const response = await fetch('http://localhost:5002/api/tutors/', {
-          method: 'POST',
+        const response = await fetch(`http://localhost:5002/api/tutors/${id}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -124,7 +167,7 @@ function TutorsForm() {
         });
   
         if (response.ok) {
-          navigate(`/database/tutors`);
+          navigate(`/database/tutors/${id}`);
         } else {
           const data = await response.json();
           console.error("Server error:", data);
@@ -133,12 +176,12 @@ function TutorsForm() {
         console.error("Network error:", error);
       }
     }
-  };  
+  };
 
   return (
     <div className="data-container">
       <div className="header-and-errors-container">
-        <h3 className="header">Add a Tutor</h3>
+        <h3 className="header">Edit Tutor</h3>
         {Object.keys(errors).length > 0 && (
           <ul className="error-list">
             {Object.entries(errors).map(([field, error]) => (
@@ -203,7 +246,7 @@ function TutorsForm() {
                     checked={tutor.preferences[preference]}
                     onChange={handleChange}
                   />
-                  <label htmlFor={preference}>{preference.replace('_', ' ').toLowerCase()}</label>
+                  <label htmlFor={preference}>{preference.replace(/_/g, ' ')}</label>
                 </div>
               ))}
             </div>
@@ -228,7 +271,7 @@ function TutorsForm() {
                     <select
                       id={`${day}.start_time`}
                       name={`${day}.start_time`}
-                      value={tutor.availability[day].start_time}
+                      value={convertTime(tutor.availability[day].start_time)}
                       onChange={handleChange}
                     >
                       <option value="">Start Time</option>
@@ -244,7 +287,7 @@ function TutorsForm() {
                     <select
                       id={`${day}.end_time`}
                       name={`${day}.end_time`}
-                      value={tutor.availability[day].end_time}
+                      value={convertTime(tutor.availability[day].end_time)}
                       onChange={handleChange}
                     >
                       <option value="">End Time</option>
@@ -259,7 +302,8 @@ function TutorsForm() {
               })}
             </div>
             <div className="button-container">
-              <button className="submit-button" onClick={handleSubmit}>Submit</button>
+              <button onClick={handleSave}>Save</button>
+              <button onClick={() => navigate(`/database/tutors/${id}`)}>Cancel</button>
             </div>
           </form>
         </div>
@@ -268,4 +312,4 @@ function TutorsForm() {
   );
 }
 
-export default TutorsForm;
+export default TutorEdit;
