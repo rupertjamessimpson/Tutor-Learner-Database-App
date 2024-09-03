@@ -285,3 +285,65 @@
   cursor: pointer;
   font-size: 16px;
 }
+
+/* Login Page Styling */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 150px;
+}
+
+.login-box {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Background color consistent with database */
+  width: 300px; /* Set a fixed width for the login box */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.login-box h2 {
+  color: #4EC1C0; /* Consistent header color */
+  text-align: center;
+  margin: 0px;
+  margin-bottom: 15px;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.login-box input[type="text"],
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4EC1C0; /* Consistent button color */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-box button:hover {
+  background-color: #3db4b0; /* Slightly darker on hover */
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 15px;
+}
