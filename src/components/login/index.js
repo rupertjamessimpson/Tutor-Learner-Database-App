@@ -2,21 +2,35 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple hardcoded authentication (replace with API call in real app)
-    if (username === 'user' && password === 'password') {
-      const fakeToken = '12345'; // Replace with real token from backend
-      onLogin(fakeToken);
-      navigate(`/database/tutors/`);
-    } else {
-      setError('Invalid username or password');
+    try {
+      const response = await fetch('http://www.tutorlearnerdatabase.com/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const token = data.token;
+        onLogin(token);
+        navigate(`/database/tutors/`);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('An error occurred. Please try again.');
     }
   };
 
@@ -27,12 +41,12 @@ function Login({ onLogin }) {
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="email">Email:</label>
             <input
-              id="username"
+              id="email"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>

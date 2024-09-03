@@ -1,13 +1,5 @@
 require('dotenv').config();
-const { Pool } = require('pg');
-
-const pool = new Pool({
-	user: process.env.DB_USER,
-	host: 'localhost',
-	database: 'tutor_learner',
-	password: process.env.DB_PASSWORD,
-	port: 5432,
-});
+const pool = require('../db');
 
 exports.getAllLearners = async (req, res) => {
 	try {

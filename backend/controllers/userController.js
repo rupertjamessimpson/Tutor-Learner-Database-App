@@ -1,5 +1,29 @@
 require('dotenv').config();
-const { Pool } = require('pg');
+const pool = require('../db');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = userResult.rows[0];
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign({ id: user.user_id }, JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 const pool = new Pool({
 	user: process.env.DB_USER,
