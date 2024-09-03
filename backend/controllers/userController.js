@@ -24,15 +24,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-
-const pool = new Pool({
-	user: process.env.DB_USER,
-	host: 'localhost',
-	database: 'tutor_learner',
-	password: process.env.DB_PASSWORD,
-	port: 5432,
-});
-
 exports.getAllUsers = async (req, res) => {
 	try {
 		const learners = await pool.query(`
