@@ -11,7 +11,7 @@ function Conversation() {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5002/api/learners")
+    fetch("http://www.tutorlearnerdatabase.com/api/learners")
       .then((response) => response.json())
       .then((data) => setLearners(data))
       .catch((err) => console.error('Error fetching learners:', err));
@@ -24,7 +24,7 @@ function Conversation() {
   const handleSelectChange = (event) => {
     const learnerId = event.target.value;
   
-    fetch('http://localhost:5002/api/learners/update-conversation', {
+    fetch('http://www.tutorlearnerdatabase.com/api/learners/update-conversation', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
