@@ -53,6 +53,22 @@ exports.getLearnerById = async (req, res) => {
 	}
 };
 
+exports.getLearnerAvailability = async (req, res) => {
+  try {
+    const learnerAvailability = await pool.query(`
+    SELECT 
+      a.*, l.first_name, l.last_name, l.level, l.available
+    FROM learner_availability a
+    LEFT JOIN learners l ON l.learner_id = a.learner_id;
+    `);
+    res.json(learnerAvailability.rows);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 exports.updateLearnerConversation = async (req, res) => {
   const { learnerId, conversationId } = req.body;
   try {
@@ -146,6 +162,22 @@ exports.deleteLearner = async (req, res) => {
   const id = req.params.id;
 
   try {
+    const matchResult = await pool.query(
+      'SELECT tutor_id FROM matches WHERE learner_id = $1',
+      [id]
+    );
+
+    if (matchResult.rowCount > 0) {
+      const matchedTutorId = matchResult.rows[0].tutor_id;
+
+      await pool.query(
+        'UPDATE tutors SET available = true WHERE tutor_id = $1',
+        [matchedTutorId]
+      );
+
+      await pool.query('DELETE FROM matches WHERE learner_id = $1', [id]);
+    }
+
     const result = await pool.query('DELETE FROM learners WHERE learner_id = $1', [id]);
 
     if (result.rowCount === 0) {

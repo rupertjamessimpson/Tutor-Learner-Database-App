@@ -5,13 +5,13 @@ import convertTime from "../../../../exports/functions/convertTime";
 function TutorDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [tutorData, setTutordata] = useState({});
+  const [tutorData, setTutorData] = useState({});
   const [isDeleteMessageOpen, setIsDeleteMessageOpen] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:5002/api/tutors/${id}`)
       .then((response) => response.json())
-      .then((data) => setTutordata(data))
+      .then((data) => setTutorData(data))
       .catch((err) => console.error('Error fetching tutor:', err));
   }, [id]);
 
@@ -106,7 +106,7 @@ function TutorDetails() {
             <div className="buttons-container">
               <div className="match-and-edit-buttons">
                 <button className="edit-button" onClick={() => navigate(`/database/tutors/edit/${id}`)}>Edit</button>
-                <button className="match-button">Match</button>
+                <button className="match-button" onClick={() => navigate(`/database/tutors/match/${id}`)}>Match</button>
               </div>
               {isDeleteMessageOpen && (
                 <div className="delete-message">

@@ -7,6 +7,7 @@ import Tutors from './components/database/tutors/index.js'
 import TutorForm from './components/forms/tutors/index.js';
 import TutorDetails from './components/database/tutors/details/index.js';
 import TutorEdit from './components/database/tutors/edit/index.js';
+import TutorMatch from './components/database/tutors/match/index.js';
 import Matches from './components/database/matches';
 import Learners from './components/database/learners/index.js'
 import LearnerForm from './components/forms/learners/index.js';
@@ -29,6 +30,7 @@ function App() {
           <Route path="/database/tutors" element={<Tutors />} />
           <Route path="/database/tutors/:id" element={<TutorDetails />} />
           <Route path="/database/tutors/edit/:id" element={<TutorEdit />} />
+          <Route path="/database/tutors/match/:id" element={<TutorMatch />} />
           <Route path="/database/learners" element={<Learners />} />
           <Route path="/database/learners/:id" element={<LearnerDetails />} />
           <Route path="/database/learners/edit/:id" element={<LearnerEdit />} />

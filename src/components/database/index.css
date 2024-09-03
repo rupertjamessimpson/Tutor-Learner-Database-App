@@ -28,6 +28,13 @@
   margin-bottom: 20px;
 }
 
+.learner-select-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .filterButton {
   background: none;
   border: none;
@@ -53,6 +60,12 @@
 .list li {
   padding: 10px;
   border-bottom: 1px solid #ccc;
+}
+
+.list .availability-item {
+  list-style-type: none;
+  border-bottom: none;
+  padding: 5px;
 }
 
 .list li a {
@@ -232,4 +245,43 @@
 
 .delete-message p {
   margin: 0;
+}
+
+/* Matches */
+
+.learner-match-name {
+  display: flex;
+  justify-content: space-between;
+}
+
+.matches-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.matches-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.matches-list li a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.matches-list li a:visited {
+  color: #007bff;
+}
+
+.match-match-button {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 16px;
 }

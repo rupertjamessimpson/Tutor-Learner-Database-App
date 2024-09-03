@@ -26,6 +26,25 @@ function Matches() {
     });
   };
 
+  const removeMatch = (id) => {
+    fetch(`http://localhost:5002/api/matches/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setMatches((prevMatches) =>
+            prevMatches.filter((match) => match.match_id !== id)
+          );
+        } else {
+          alert(`Error deleting match: ${data.message || "Unknown error"}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const filteredMatches = applyFilters();
 
   return (
@@ -41,15 +60,21 @@ function Matches() {
       </div>
       <div className="filter-and-list-container">
         <div className="list-container">
-          <ul className="list">
+          <ul className="matches-list">
             {filteredMatches.map((match) => (
               <li key={match.match_id}>
-                <Link to={`/database/tutors/${match.tutor_id}`}>
-                  {match.tutor_first_name} {match.tutor_last_name} {" - "}
-                </Link>
-                <Link to={`/database/learners/${match.learner_id}`}>
-                  {match.learner_first_name} {match.learner_last_name}
-                </Link>
+                <div>
+                  <Link to={`/database/tutors/${match.tutor_id}`}>
+                    {match.tutor_first_name} {match.tutor_last_name} {" - "}
+                  </Link>
+                  <Link to={`/database/learners/${match.learner_id}`}>
+                    {match.learner_first_name} {match.learner_last_name}
+                  </Link>
+                </div>
+                <button
+                  onClick={() => removeMatch(match.match_id)}
+                  className="remove-button">Unmatch
+                </button>
               </li>
             ))}
           </ul>

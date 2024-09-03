@@ -49,13 +49,13 @@ function Learners() {
   };
 
   const applyFilters = () => {
-    return learners.filter(learner => {
+    const filtered = learners.filter(learner => {
       const matchesSearchQuery = `${learner.first_name} ${learner.last_name}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-
+  
       const matchesAvailability = filters.available ? learner.available : true;
-
+  
       const matchesNotInClass = filters.not_in_class ? learner.conversation === null : true;
   
       const matchesLevel = Object.keys(filters).slice(2, 13).some(key => {
@@ -65,7 +65,7 @@ function Learners() {
       const matchDaysAvailable = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].every(day => {
         return filters[day] ? learner[day] : true;
       });
-
+  
       const anyLevelFilterSelected = Object.keys(filters).slice(2, 13).some(key => filters[key]);
       const anyDayFilterSelected = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].some(day => filters[day]);
   
@@ -76,8 +76,9 @@ function Learners() {
   
       return matchesSearchQuery && matchesFilters;
     });
+  
+    return filtered.sort((a, b) => a.learner_id - b.learner_id);
   };
-
 
   const filteredLearners = applyFilters();
 

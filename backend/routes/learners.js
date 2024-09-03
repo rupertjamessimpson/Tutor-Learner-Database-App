@@ -3,6 +3,7 @@ const router = express.Router();
 const learnerController = require('../controllers/learnerController');
 
 router.get('/', learnerController.getAllLearners);
+router.get('/availability', learnerController.getLearnerAvailability);
 router.get('/:id', learnerController.getLearnerById);
 router.post('/', learnerController.createLearner);
 router.delete('/:id', learnerController.deleteLearner);

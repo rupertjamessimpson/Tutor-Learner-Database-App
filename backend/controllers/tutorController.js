@@ -127,6 +127,22 @@ exports.deleteTutor = async (req, res) => {
   const id = req.params.id;
 
   try {
+    const matchResult = await pool.query(
+      'SELECT learner_id FROM matches WHERE tutor_id = $1',
+      [id]
+    );
+
+    if (matchResult.rowCount > 0) {
+      const matchedLearnerId = matchResult.rows[0].learner_id;
+
+      await pool.query(
+        'UPDATE learners SET available = true WHERE learner_id = $1',
+        [matchedLearnerId]
+      );
+
+      await pool.query('DELETE FROM matches WHERE tutor_id = $1', [id]);
+    }
+
     const result = await pool.query('DELETE FROM tutors WHERE tutor_id = $1', [id]);
 
     if (result.rowCount === 0) {
@@ -139,6 +155,7 @@ exports.deleteTutor = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 exports.updateTutor = async (req, res) => {
   const { id } = req.params;
