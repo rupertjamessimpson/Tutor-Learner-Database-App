@@ -1,8 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-const routes = require('./routes');
+const path = require('path');
 
 const app = express();
+
+const buildPath = path.join(__dirname, "../client/build");
+
+app.use(express.static(buildPath));
+
+const routes = require('./routes');
 
 app.use(cors());
 app.use(express.json());
