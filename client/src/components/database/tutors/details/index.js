@@ -9,7 +9,7 @@ function TutorDetails() {
   const [isDeleteMessageOpen, setIsDeleteMessageOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/tutors/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/tutors/${id}`)
       .then((response) => response.json())
       .then((data) => setTutorData(data))
       .catch((err) => console.error('Error fetching tutor:', err));
@@ -24,7 +24,7 @@ function TutorDetails() {
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:5002/api/tutors/${id}`, {
+    fetch(`https://www.tutorlearnerdatabase.com/api/tutors/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

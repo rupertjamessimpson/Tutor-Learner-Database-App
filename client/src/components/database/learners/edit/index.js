@@ -26,7 +26,7 @@ function LearnerEdit() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/learners/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/learners/${id}`)
       .then((response) => response.json())
       .then((data) => {
         const { learner: learnerData, availability } = data;
@@ -128,7 +128,7 @@ function LearnerEdit() {
     };
     if (validateForm()) {
       try {
-        const response = await fetch(`http://localhost:5002/api/learners/${id}`, {
+        const response = await fetch(`https://www.tutorlearnerdatabase.com/api/learners/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

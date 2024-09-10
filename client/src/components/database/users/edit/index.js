@@ -14,7 +14,7 @@ const UserEdit = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/users/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/users/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const { user: userData } = data;
@@ -63,7 +63,7 @@ const UserEdit = () => {
     };
     if (validateForm()) {
       try {
-        const response = await fetch(`http://localhost:5002/api/users/${id}`, {
+        const response = await fetch(`https://www.tutorlearnerdatabase.com/api/users/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

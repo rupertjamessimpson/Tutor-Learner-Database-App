@@ -6,7 +6,7 @@ function Matches() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/matches`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/matches`)
       .then((response) => response.json())
       .then((data) => setMatches(data))
       .catch((err) => console.error(err));
@@ -27,7 +27,7 @@ function Matches() {
   };
 
   const removeMatch = (id) => {
-    fetch(`http://localhost:5002/api/matches/${id}`, {
+    fetch(`https://www.tutorlearnerdatabase.com/api/matches/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())

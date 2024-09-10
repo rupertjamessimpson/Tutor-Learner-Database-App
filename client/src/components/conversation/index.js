@@ -11,7 +11,7 @@ function Conversation() {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://www.tutorlearnerdatabase.com/api/learners")
+    fetch("https://www.tutorlearnerdatabase.com/api/learners")
       .then((response) => response.json())
       .then((data) => setLearners(data))
       .catch((err) => console.error('Error fetching learners:', err));

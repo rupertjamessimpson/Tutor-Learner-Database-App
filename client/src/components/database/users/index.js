@@ -6,7 +6,7 @@ function Users() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/users/`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/users/`)
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));

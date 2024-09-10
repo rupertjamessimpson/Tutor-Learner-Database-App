@@ -8,7 +8,7 @@ function UserDetails() {
   const [isDeleteMessageOpen, setIsDeleteMessageOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/users/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/users/${id}`)
       .then((response) => response.json())
       .then((data) => setUserData(data))
       .catch((err) => console.error('Error fetching user:', err));
@@ -23,7 +23,7 @@ function UserDetails() {
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:5002/api/users/${id}`, {
+    fetch(`https://www.tutorlearnerdatabase.com/api/users/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

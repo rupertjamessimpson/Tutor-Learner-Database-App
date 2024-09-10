@@ -39,7 +39,7 @@ function TutorEdit() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/tutors/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/tutors/${id}`)
       .then((response) => response.json())
       .then((data) => {
         const { tutor: tutorData, preferences, availability } = data;
@@ -158,7 +158,7 @@ function TutorEdit() {
     };
     if (validateForm()) {
       try {
-        const response = await fetch(`http://localhost:5002/api/tutors/${id}`, {
+        const response = await fetch(`https://www.tutorlearnerdatabase.com/api/tutors/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

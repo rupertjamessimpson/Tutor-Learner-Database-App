@@ -28,7 +28,7 @@ function Tutors() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/tutors/`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/tutors/`)
       .then((response) => response.json())
       .then((data) => setTutors(data))
       .catch((err) => console.error(err));

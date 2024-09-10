@@ -10,14 +10,14 @@ function TutorMatch() {
   const [toggleSelect, setToggleSelect] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/tutors/${id}`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/tutors/${id}`)
       .then((response) => response.json())
       .then((data) => setTutorData(data))
       .catch((err) => console.error('Error fetching tutor:', err));
   }, [id]);
 
   useEffect(() => {
-    fetch(`http://localhost:5002/api/learners/availability`)
+    fetch(`https://www.tutorlearnerdatabase.com/api/learners/availability`)
       .then((response) => response.json())
       .then((data) => setLearnerAvailability(data))
       .catch((err) => console.error('Error fetching learner availability:', err));
@@ -29,7 +29,7 @@ function TutorMatch() {
       learner_id: learnerID,
     };
     
-    fetch('http://localhost:5002/api/matches', {
+    fetch('https://www.tutorlearnerdatabase.com/api/matches', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

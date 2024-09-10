@@ -30,7 +30,7 @@ function Learners() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5002/api/learners")
+    fetch("https://www.tutorlearnerdatabase.com/api/learners")
       .then(response => response.json())
       .then(data => {setLearners(data)})
       .catch(err => {console.log(err)});
