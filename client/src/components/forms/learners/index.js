@@ -59,13 +59,10 @@ function LearnersForm() {
     if (!learner.first_name.trim()) newErrors.first_name = "First name is required";
     if (!learner.last_name.trim()) newErrors.last_name = "Last name is required";
     if (!learner.phone.trim()) newErrors.phone = "Phone number is required";
-    // if (!learner.email.trim()) newErrors.email = "Email is required";
     if (!learner.level.trim()) newErrors.level = "Level is required";
   
     const phonePattern = /^[0-9]{10}$/;
-    // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (learner.phone && !phonePattern.test(learner.phone)) newErrors.phone = "Phone number is invalid";
-    // if (learner.email && !emailPattern.test(learner.email)) newErrors.email = "Email is invalid";
   
     Object.keys(learner.availability).forEach(day => {
       const { start_time, end_time } = learner.availability[day];
