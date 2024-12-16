@@ -47,34 +47,60 @@ function TutorMatch() {
       .catch((error) => {
         console.error('Error:', error);
       });
-  };     
+  };
 
   const filterLearners = () => {
-    const { preferences } = tutorData;
+    const { preferences, availability: tutorAvailability } = tutorData;
   
-    if (!preferences) return [];
+    if (!preferences || !tutorAvailability) return [];
   
+    // Extract preferred levels from tutor preferences
     const preferredLevels = Object.entries(preferences)
       .filter(([key, value]) => key !== 'tutor_id' && value)
       .map(([key]) => key);
   
+    // Transform tutor availability into a day-keyed object
+    const tutorAvailabilityByDay = tutorAvailability.reduce((acc, slot) => {
+      if (!acc[slot.day]) acc[slot.day] = [];
+      acc[slot.day].push({ start_time: slot.start_time, end_time: slot.end_time });
+      return acc;
+    }, {});
+  
+    // Reduce learners based on availability and matching preferences
     const availableLearners = learnerAvailability.reduce((acc, curr) => {
       if (curr.available && preferredLevels.includes(curr.level)) {
-        if (!acc[curr.learner_id]) {
-          acc[curr.learner_id] = {
-            learner_id: curr.learner_id,
-            name: `${curr.first_name} ${curr.last_name}`,
-            level: curr.level,
-            availability: {}
-          };
+        // Check if the learner's time overlaps with the tutor's time
+        const tutorDayAvailability = tutorAvailabilityByDay[curr.day]; // Get tutor's availability for this day
+  
+        if (tutorDayAvailability && tutorDayAvailability.length > 0) {
+          const hasTimeOverlap = tutorDayAvailability.some(tutorSlot => {
+            const tutorStart = new Date(`1970-01-01T${tutorSlot.start_time}`);
+            const tutorEnd = new Date(`1970-01-01T${tutorSlot.end_time}`);
+            const learnerStart = new Date(`1970-01-01T${curr.start_time}`);
+            const learnerEnd = new Date(`1970-01-01T${curr.end_time}`);
+  
+            // Check for any overlap between tutor and learner availability
+            return learnerEnd > tutorStart && tutorEnd > learnerStart;
+          });
+  
+          if (hasTimeOverlap) {
+            if (!acc[curr.learner_id]) {
+              acc[curr.learner_id] = {
+                learner_id: curr.learner_id,
+                name: `${curr.first_name} ${curr.last_name}`,
+                level: curr.level,
+                availability: {},
+              };
+            }
+            if (!acc[curr.learner_id].availability[curr.day]) {
+              acc[curr.learner_id].availability[curr.day] = [];
+            }
+            acc[curr.learner_id].availability[curr.day].push({
+              start_time: curr.start_time,
+              end_time: curr.end_time,
+            });
+          }
         }
-        if (!acc[curr.learner_id].availability[curr.day]) {
-          acc[curr.learner_id].availability[curr.day] = [];
-        }
-        acc[curr.learner_id].availability[curr.day].push({
-          start_time: curr.start_time,
-          end_time: curr.end_time
-        });
       }
       return acc;
     }, {});

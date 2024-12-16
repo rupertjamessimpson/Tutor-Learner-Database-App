@@ -30,7 +30,9 @@ function Learners() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("https://www.tutorlearnerdatabase.com/api/learners")
+    const URL = process.env.DEV_URL || "https://www.tutorlearnerdatabase.com/api/";
+
+    fetch(`${URL}/learners`)
       .then(response => response.json())
       .then(data => {setLearners(data)})
       .catch(err => {console.log(err)});
